@@ -62,12 +62,6 @@ namespace detail {
 
 template<typename... T>
 using compose = typename detail::compose_parents<T...>::type;
-//struct compose
-//{
-//  using Parents = 
-//  //using type = detail::compose_wrapper<Parents>;
-//  using type = Parents;
-//};
 
 struct I1
 {
@@ -99,12 +93,14 @@ struct I5
   virtual ~I5() noexcept = default;
 };
 
-inline void f(const compose<I1>&)
+inline void f(compose<I1>& a)
 {
+  a.doI1();
 }
 
-void f2(const compose<I3, I4>&)
+inline void f2(compose<I3, I4>& a)
 {
+  a.doI4();
 }
 
 struct C1: compose<I1, I2, I3, I4>
@@ -132,11 +128,11 @@ struct C3: compose<I1, I2>
 
 int main(int, char**)
 {
-  const auto c1 = C1{};
-  const auto c2 = C2{};
-  const auto c3 = C3{};
+  auto c1 = C1{};
+  auto c2 = C2{};
+  auto c3 = C3{};
 
-  f2(c1);
+  f2(c2);
 
   return 0;
 }
