@@ -2,6 +2,9 @@ namespace detail {
   template<typename... T>
   struct compose_interfaces;
 
+  // TODO: generate compose_interface<> using variadic templates only
+  // instead of hardcode it for each number of arguments
+
   template<typename A>
   struct compose_interfaces<A>
   {
