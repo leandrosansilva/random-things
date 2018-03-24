@@ -40,6 +40,12 @@ void serveChicken(implements<LooksLikeChicken, TastesLikeChicken, FeelsLikeChick
   feel(chicken);
 }
 
+void serveChickenWithNoTaste(implements<LooksLikeChicken, FeelsLikeChicken>& c) {
+  look(c);
+  //taste(c); // ERROR
+  feel(c);
+}
+
 struct BeefCut {
   virtual int cutType() = 0;
 };
@@ -57,5 +63,6 @@ struct ChuckSteak: /* is a */ Beef,
 int main(int, char**) {
   auto steak = ChuckSteak{};
   serveChicken(steak);
+  serveChickenWithNoTaste(steak);
   return 0;
 }
