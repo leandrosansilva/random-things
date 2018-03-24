@@ -61,12 +61,13 @@ namespace detail {
 }
 
 template<typename... T>
-struct compose
-{
-  //using Set = brigand::set<T...>;
-  //using Parents = typename detail::compose_parents<Set>::type;
-  using type = detail::compose_wrapper<T...>;
-};
+using compose = typename detail::compose_parents<T...>::type;
+//struct compose
+//{
+//  using Parents = 
+//  //using type = detail::compose_wrapper<Parents>;
+//  using type = Parents;
+//};
 
 struct I1
 {
@@ -98,13 +99,15 @@ struct I5
   virtual ~I5() noexcept = default;
 };
 
-inline void f(const compose<I1>::type&)
+inline void f(const compose<I1>&)
 {
 }
 
-//void f(const compose<I3, I4>::type&);
+void f2(const compose<I3, I4>&)
+{
+}
 
-struct C1: compose<I1, I2, I3, I4>::type
+struct C1: compose<I1, I2, I3, I4>
 {
   void doI1() final {}
   void doI2() final {}
@@ -112,7 +115,7 @@ struct C1: compose<I1, I2, I3, I4>::type
   void doI4() final {}
 };
 
-struct C2: compose<I1, I2, I3, I4, I5>::type
+struct C2: compose<I1, I2, I3, I4, I5>
 {
   void doI1() final {}
   void doI2() final {}
@@ -121,7 +124,7 @@ struct C2: compose<I1, I2, I3, I4, I5>::type
   void doI5() final {}
 };
 
-struct C3: compose<I1, I2>::type
+struct C3: compose<I1, I2>
 {
   void doI1() final {}
   void doI2() final {}
