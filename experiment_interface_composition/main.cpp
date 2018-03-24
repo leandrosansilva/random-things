@@ -2,7 +2,7 @@
 
 namespace detail {
   template<typename... T>
-  struct compose_wrapper: T...
+  struct compose_wrapper: virtual T...
   {
   };
 
@@ -12,7 +12,7 @@ namespace detail {
   template<typename A>
   struct compose_parents<A>
   {
-    struct type: A
+    struct type: virtual A
     {
     };
   };
@@ -20,8 +20,8 @@ namespace detail {
   template<typename A, typename B>
   struct compose_parents<A, B>
   {
-    struct type: compose_parents<A>::type,
-                 compose_parents<B>::type
+    struct type: virtual compose_parents<A>::type,
+                 virtual compose_parents<B>::type
     {
     };
   };
@@ -29,9 +29,9 @@ namespace detail {
   template<typename A, typename B, typename C>
   struct compose_parents<A, B, C>
   {
-    struct type: compose_parents<A, B>::type,
-                 compose_parents<A, C>::type,
-                 compose_parents<B, C>::type
+    struct type: virtual compose_parents<A, B>::type,
+                 virtual compose_parents<A, C>::type,
+                 virtual compose_parents<B, C>::type
     {
     };
   };
@@ -39,10 +39,10 @@ namespace detail {
   template<typename A, typename B, typename C, typename D>
   struct compose_parents<A, B, C, D>
   {
-    struct type: compose_parents<A, B, C>::type,
-                 compose_parents<A, B, D>::type,
-                 compose_parents<A, C, D>::type,
-                 compose_parents<B, C, D>::type
+    struct type: virtual compose_parents<A, B, C>::type,
+                 virtual compose_parents<A, B, D>::type,
+                 virtual compose_parents<A, C, D>::type,
+                 virtual compose_parents<B, C, D>::type
     {
     };
   };
@@ -50,11 +50,11 @@ namespace detail {
   template<typename A, typename B, typename C, typename D, typename E>
   struct compose_parents<A, B, C, D, E>
   {
-    struct type: compose_parents<A, B, C, D>::type,
-                 compose_parents<A, B, C, E>::type,
-                 compose_parents<A, C, D, E>::type,
-                 compose_parents<B, C, D, E>::type,
-                 compose_parents<A, B, D, E>::type
+    struct type: virtual compose_parents<A, B, C, D>::type,
+                 virtual compose_parents<A, B, C, E>::type,
+                 virtual compose_parents<A, C, D, E>::type,
+                 virtual compose_parents<B, C, D, E>::type,
+                 virtual compose_parents<A, B, D, E>::type
     {
     };
   };
@@ -136,7 +136,7 @@ int main(int, char**)
   const auto c2 = C2{};
   const auto c3 = C3{};
 
-  f(c3);
+  f2(c1);
 
   return 0;
 }
