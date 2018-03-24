@@ -12,14 +12,17 @@ struct Feeling {};
 
 struct LooksLikeChicken {
   virtual Look lookOfChicken() = 0;
+  virtual ~LooksLikeChicken() noexcept = default;
 };
 
 struct TastesLikeChicken {
   virtual Taste tasteOfChicken() = 0;
+  virtual ~TastesLikeChicken() noexcept = default;
 };
 
 struct FeelsLikeChicken {
   virtual Feeling feelingOfChicken() = 0;
+  virtual ~FeelsLikeChicken() noexcept = default;
 };
 
 void look(implements<LooksLikeChicken>& l) {
@@ -48,11 +51,12 @@ void serveChickenWithNoTaste(implements<LooksLikeChicken, FeelsLikeChicken>& c) 
 
 struct BeefCut {
   virtual int cutType() = 0;
+  virtual ~BeefCut() noexcept = default;
 };
 
 struct Beef { /* Concrete things of a beef */ };
 
-struct ChuckSteak: /* is a */ Beef,
+struct ChuckSteak final: /* is a */ Beef,
   implements<LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken, BeefCut> {
   Look lookOfChicken() final { return {};  }
   Taste tasteOfChicken() final { return {}; }
