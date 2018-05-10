@@ -1,0 +1,6 @@
+[submodule "experiment_interface_composition/3rd/ctti"]
+	path = experiment_interface_composition/3rd/ctti
+	url = git@github.com:Manu343726/ctti.git
+[submodule "experiment_interface_composition/3rd/brigand"]
+	path = experiment_interface_composition/3rd/brigand
+	url = git@github.com:edouarda/brigand.git
