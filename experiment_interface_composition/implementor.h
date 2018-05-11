@@ -1,5 +1,6 @@
 #include <ctti/type_id.hpp>
-#include <brigand/brigand.hpp>
+#include <brigand/algorithms/sort.hpp>
+#include <brigand/sequences/list.hpp>
 
 namespace detail {
   template<typename... T>
@@ -7,42 +8,41 @@ namespace detail {
 
   // TODO: generate compose_interface<> using variadic templates only
   // instead of hardcode it for each number of arguments
-
-	template<typename Lhs, typename Rhs>
-	using less_type_id = brigand::bool_<ctti::type_id<Lhs>().hash() < ctti::type_id<Rhs>().hash()>;
-
-	template<typename... Ts>
-	using sorted_types = brigand::sort<brigand::list<Ts...>, brigand::bind<less_type_id, brigand::_1, brigand::_2>>;
-
-	template<typename... Ts>
+    
+  template<typename Lhs, typename Rhs>
+  using less_type_id = brigand::bool_<ctti::type_id<Lhs>().hash() < ctti::type_id<Rhs>().hash()>;
+    
+  template<typename... Ts>
+  using sorted_types = brigand::sort<brigand::list<Ts...>, brigand::bind<less_type_id, brigand::_1, brigand::_2>>;
+    
+  template<typename... Ts>
   struct compose_wrapper: virtual Ts...
   {
   };
-
-	template<typename... Ts>
+    
+  template<typename... Ts>
+  struct convert
+  {
+      using input = brigand::list<Ts...>;
+      using output = compose_wrapper<Ts...>;
+  };
+    
+  template<typename... Ts>
   struct compose_interfaces;
-
-	template<typename... Ts>
-	struct compose_parent
-	{
-		using sorted_list = sorted_types<Ts...>;
-
-		template<typename List, typename... Elements>
-		struct type: virtual
-		
-		template<typename... Parents>
-		brigand::list<Parents...> = ;	
-		
-	};
-
-	using compose = typename detail::compose_parents<T...>::type;
+    
+  template<typename... Ts>
+  struct compose_parent
+  {
+    using sorted = sorted_types<Ts...>;
+    using type = typename convert<sorted>::output;
+  };
 
   template<typename A>
   struct compose_interfaces<A>
   {
-    struct type: virtual A
-    {
-    };
+      struct type: virtual A
+      {
+      };
   };
 
   template<typename A, typename B>

@@ -1,9 +1,5 @@
 #include "implementor.h"
 
-#include <ctti/type_id.hpp>
-#include <ctti/nameof.hpp>
-#include <brigand/brigand.hpp>
-
 /*
  * If it looks like chicken, tastes like chicken,
  * and feels like chicken but Chuck Norris says its beef,
@@ -41,18 +37,6 @@ void feel(implements<FeelsLikeChicken>& f) {
   const auto feeling = f.feelingOfChicken();  
 }
 
-using type_list = brigand::list<LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken>;
-
-constexpr auto h1 = ctti::type_id<LooksLikeChicken>().hash();
-constexpr auto h2 = ctti::type_id<TastesLikeChicken>().hash();
-
-static_assert(h1 > h2, "");
-
-template<typename Lhs, typename Rhs>
-using less_typeid = brigand::bool_<ctti::type_id<Lhs>().hash() < ctti::type_id<Rhs>().hash()>;
-
-using sorted = brigand::sort<type_list, brigand::bind<less_typeid, brigand::_1, brigand::_2>>;
-
 void serveChicken(implements<LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken>& chicken) {
   look(chicken);
   taste(chicken);
@@ -80,9 +64,15 @@ struct ChuckSteak final: /* is a */ Beef,
   int cutType() final { return {}; }
 };
 
+using Cacatua1 = detail::compose_parent<LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken, BeefCut>::type;
+using Cacatua2 = detail::compose_parent<BeefCut, LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken>::type;
+
+static_assert(std::is_same<Cacatua1, Cacatua2>::value, "");
+
 int main(int, char**) {
   auto steak = ChuckSteak{};
   serveChicken(steak);
   serveChickenWithNoTaste(steak);
+    
   return 0;
 }
