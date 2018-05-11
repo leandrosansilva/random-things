@@ -28,21 +28,40 @@ namespace detail {
   };
     
   template<typename... Ts>
-  struct compose_interfaces;
-    
-  template<typename... Ts>
   struct compose_parent
   {
     using sorted = sorted_types<Ts...>;
     using type = typename convert<sorted>::output;
   };
+    
+  template<typename... Ts>
+  struct compose_interfaces;
+    
+  template<typename... Ts>
+  struct compose_sorted_interfaces;
+    
+  // FIXME: this specialization should just use T as type
+  template<typename T>
+  struct compose_sorted_interfaces<T>
+  {
+    // FIXME: this is just a test to try to figure out what's wrong..
+    using composed_parent_type = typename compose_parent<T>::type;
+    using type = composed_parent_type;
+  };
+
+  template<typename... Ts>
+  struct compose_sorted_interfaces
+  {
+      using composed_parent_type = typename compose_parent<Ts...>::type;
+      using type = typename compose_interfaces<composed_parent_type>::type;
+  };
 
   template<typename A>
   struct compose_interfaces<A>
   {
-      struct type: virtual A
-      {
-      };
+    struct type: virtual A
+    {
+    };
   };
 
   template<typename A, typename B>
@@ -88,15 +107,5 @@ namespace detail {
   };
 }
 
-/**
- * FIXME: there's a obvious limitation in this implementation that is the fact that
- * implements<A, B> should be equal to implements<B, A>, but I confess I don't know how
- * to implement it. The obvious solution would be to sort tye type list, so it'd behave as
- * a ordered set, but I am pretty sure this is not possible in C++ as there's no order 
- * relation beween sets. Unless...
- * one implements some order metafunction like
- * before_than<A, B>, before_than<B, C>, which implies before_than<A, C>, and so on...
- * but I cannot someone doing it in system with thousands of interfaces...
-*/
 template<typename... T>
 using implements = typename detail::compose_interfaces<T...>::type;

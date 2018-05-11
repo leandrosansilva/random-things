@@ -1,4 +1,5 @@
 #include "implementor.h"
+#include <iostream>
 
 /*
  * If it looks like chicken, tastes like chicken,
@@ -64,15 +65,29 @@ struct ChuckSteak final: /* is a */ Beef,
   int cutType() final { return {}; }
 };
 
-using Cacatua1 = detail::compose_parent<LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken, BeefCut>::type;
-using Cacatua2 = detail::compose_parent<BeefCut, LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken>::type;
+using Cacatua1 = detail::compose_sorted_interfaces<LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken, BeefCut>::type;
+using Cacatua2 = detail::compose_sorted_interfaces<BeefCut, LooksLikeChicken, TastesLikeChicken, FeelsLikeChicken>::type;
 
 static_assert(std::is_same<Cacatua1, Cacatua2>::value, "");
+
+// TODO: maybe use is_convertible<Base*, Derived*>?
+static_assert(std::is_base_of<LooksLikeChicken, detail::compose_sorted_interfaces<LooksLikeChicken>::type>::value, "");
+
+struct Maria: detail::compose_sorted_interfaces<LooksLikeChicken>::type
+{
+  Look lookOfChicken() final { return {}; }
+};
 
 int main(int, char**) {
   auto steak = ChuckSteak{};
   serveChicken(steak);
   serveChickenWithNoTaste(steak);
+    
+  Maria a;
+    
+  std::cout << ctti::nameof<decltype(a)>() << std::endl;
+    
+  a.lookOfChicken();
     
   return 0;
 }
