@@ -25,7 +25,9 @@ namespace detail {
 	template<typename... Ts>
 	struct compose_parent
 	{
-		template<typename SortedList = sorted_types<Ts...>>
+		using sorted_list = sorted_types<Ts...>;
+
+		template<typename List, typename... Elements>
 		struct type: virtual
 		
 		template<typename... Parents>
