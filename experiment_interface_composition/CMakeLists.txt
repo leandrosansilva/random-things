@@ -12,6 +12,7 @@ include_directories(
   ${DEPS_INSTALL_DIR}/brigand/include/ 
 )
 
-add_definitions(-Wall -Wextra)
+add_definitions(-Wall -Wextra -Wpedantic)
 
-add_executable(chuck chuck_norris.cpp)
+add_executable(tests implementor_tests.cpp)
+#add_executable(chuck chuck_norris.cpp)
