@@ -40,6 +40,23 @@ namespace detail {
 
   template<typename... T>
   struct implements;
+    
+  template<typename... Ts>
+  struct implements_wrapper_util;
+
+  template<template<class...> class List, class... Ts>
+  struct implements_wrapper_util<List<Ts...>>
+  {
+    using type = typename implements<Ts...>::type;
+  };
+
+  template<typename... Ts>
+  struct implements_wrapper
+  {
+    // FIXME: this is copy&paste... :-(
+    using sorted_list = sorted_types<Ts...>; // list<TS'...>
+    using type = typename implements_wrapper_util<sorted_list>::type;
+  };
 
   template<typename A>
   struct implements<A>
@@ -93,4 +110,4 @@ namespace detail {
 }
 
 template<typename... Ts>
-using implements = typename detail::implements<Ts...>::type;
+using implements = typename detail::implements_wrapper<Ts...>::type;

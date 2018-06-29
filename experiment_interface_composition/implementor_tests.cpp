@@ -19,6 +19,12 @@ struct C
   virtual ~C() noexcept = default;
 };
 
+struct D
+{
+  virtual void d() = 0;
+  virtual ~D() noexcept = default;
+};
+
 void useA(implements<A>& a)
 {
   a.a();
@@ -49,10 +55,8 @@ void useBA(implements<B, A>& v)
   v.b();
 }
 
-using Cacatua1 = implements<A, B, C>;
-using Cacatua2 = implements<C, A, B>;
+static_assert(std::is_same<implements<A, B, C>, implements<C, A, B>>::value, "");
 
-// TODO: maybe use is_convertible<Base*, Derived*>?
 static_assert(std::is_base_of<A, implements<A>>::value, "");
 static_assert(std::is_base_of<A, implements<A, B>>::value, "");
 static_assert(std::is_base_of<B, implements<A, B>>::value, "");
@@ -63,19 +67,35 @@ static_assert(!std::is_base_of<B, implements<A, C>>::value, "");
 static_assert(std::is_base_of<implements<A>, implements<A>>::value, "");
 static_assert(std::is_base_of<implements<A>, implements<A, B>>::value, "");
 
+static_assert(std::is_base_of<implements<A, B>, implements<A, B, C>>::value, "");
+static_assert(std::is_base_of<implements<B, C>, implements<A, B, C>>::value, "");
+static_assert(std::is_base_of<implements<A, C>, implements<A, B, C>>::value, "");
+
+static_assert(!std::is_base_of<implements<A, C>, implements<B, C>>::value, "");
+static_assert(!std::is_base_of<implements<A, C>, implements<A, B, D>>::value, "");
+
 struct Maria final: implements<A, B>
 {
-  void a() final {}
-  void b() final {}
+  void a() final
+  {
+    std::cout << "Naria A\n";
+  }
+
+  void b() final
+  {
+    std::cout << "Naria B\n";
+  }
 };
 
 void testA()
 {
   Maria a;
-  std::cout << ctti::nameof<decltype(a)>() << std::endl;
   a.b();
+  useBA(a);
+  useAB(a);
 }
 
 int main(int, char**)
 {
+  testA();
 }
