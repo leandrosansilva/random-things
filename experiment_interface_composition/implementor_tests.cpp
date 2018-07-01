@@ -1,5 +1,6 @@
 #include "implementor.h"
 #include <iostream>
+#include <brigand/sequences/set.hpp>
 
 struct A
 {
