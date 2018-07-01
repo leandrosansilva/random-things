@@ -7,6 +7,8 @@
  * then it's beef.
 */
 
+using chuecken::implements;
+
 struct Look {};
 struct Taste {};
 struct Feeling {};

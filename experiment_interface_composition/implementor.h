@@ -3,6 +3,8 @@
 #include <brigand/algorithms/flatten.hpp>
 #include <brigand/sequences/list.hpp>
 
+namespace chuecken {
+
 namespace detail {
   // TODO: generate compose_interface<> using variadic templates only
   // instead of hardcode it for each number of arguments
@@ -120,3 +122,5 @@ using compose = typename brigand::list<Ts...>;
 
 template<typename... Ts>
 using implements = typename detail::implements_wrapper<Ts...>::type;
+
+}

@@ -17,4 +17,4 @@ include_directories(
 add_definitions(-Wall -Wextra -Wpedantic)
 
 add_executable(tests implementor_tests.cpp)
-#add_executable(chuck chuck_norris.cpp)
+add_executable(chuck chuck_norris.cpp)

@@ -2,6 +2,9 @@
 #include <iostream>
 #include <brigand/sequences/set.hpp>
 
+using chuecken::compose;
+using chuecken::implements;
+
 struct A
 {
   virtual void a() = 0;
