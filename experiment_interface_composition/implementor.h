@@ -1,5 +1,6 @@
 #include <ctti/type_id.hpp>
 #include <brigand/algorithms/sort.hpp>
+#include <brigand/algorithms/flatten.hpp>
 #include <brigand/sequences/list.hpp>
 
 namespace detail {
@@ -48,6 +49,25 @@ namespace detail {
   struct implements_wrapper_util<List<Ts...>>
   {
     using type = typename implements<Ts...>::type;
+  };
+
+  template<typename... Ts>
+  struct implements_wrapper;
+
+  template<typename... Ts>
+  struct implements_wrapper_for_list;
+
+  template<template<class...> class List, typename... Elements>
+  struct implements_wrapper_for_list<List<Elements...>>
+  {
+    using type = typename implements_wrapper<Elements...>::type;
+  };
+
+  template<template<class...> class List, typename... Elements>
+  struct implements_wrapper<List<Elements...>>
+  {
+    using flattened = brigand::flatten<brigand::list<Elements...>>;
+    using type = typename implements_wrapper_for_list<flattened>::type;
   };
 
   template<typename... Ts>
@@ -108,6 +128,9 @@ namespace detail {
     };
   };
 }
+
+template<typename... Ts>
+using compose = typename brigand::list<Ts...>;
 
 template<typename... Ts>
 using implements = typename detail::implements_wrapper<Ts...>::type;

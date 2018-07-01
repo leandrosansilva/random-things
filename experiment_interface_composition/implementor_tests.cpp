@@ -55,6 +55,16 @@ void useBA(implements<B, A>& v)
   v.b();
 }
 
+using AB = compose<A, B>;
+
+using ABC = compose<AB, C>;
+
+using CAB = compose<C, B, compose<A>>;
+
+static_assert(std::is_same<implements<ABC>, implements<A, B, C>>::value, "");
+static_assert(std::is_same<implements<CAB>, implements<ABC>>::value, "");
+static_assert(!std::is_same<implements<CAB>, implements<compose<A, B>>>::value, "");
+
 static_assert(std::is_same<implements<A, B, C>, implements<C, A, B>>::value, "");
 
 static_assert(std::is_base_of<A, implements<A>>::value, "");
@@ -74,7 +84,7 @@ static_assert(std::is_base_of<implements<A, C>, implements<A, B, C>>::value, "")
 static_assert(!std::is_base_of<implements<A, C>, implements<B, C>>::value, "");
 static_assert(!std::is_base_of<implements<A, C>, implements<A, B, D>>::value, "");
 
-struct Maria final: implements<A, B>
+struct Maria final: implements<AB>
 {
   void a() final
   {
