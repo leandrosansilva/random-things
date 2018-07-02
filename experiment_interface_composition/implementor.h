@@ -45,9 +45,6 @@ namespace detail {
   {
   };
 
-  template<typename... T>
-  struct implements;
-    
   template<typename... Ts>
   struct implements_wrapper;
 
