@@ -46,21 +46,21 @@ namespace detail {
   };
 
   template<typename... Ts>
-  struct implements_wrapper;
-
-  template<template<class...> class List, typename... Elements>
-  struct implements_wrapper<List<Elements...>>
-  {
-    using flattened = brigand::flatten<brigand::list<Elements...>>;
-    using type = typename rename<flattened, implements_wrapper>::type;
-  };
-
-  template<typename... Ts>
   struct implements_wrapper
   {
     // FIXME: this is copy&paste... :-(
     using sorted_list = sorted_types<Ts...>;
     using type = typename rename<sorted_list, implements>::type;
+  };
+
+  template<typename... Ts>
+  struct sanitize;
+
+  template<template<class...> class List, typename... Elements>
+  struct sanitize<List<Elements...>>
+  {
+    using flattened = brigand::flatten<brigand::list<Elements...>>;
+    using type = typename rename<flattened, implements_wrapper>::type;
   };
 
   template<typename A>
@@ -118,6 +118,6 @@ template<typename... Ts>
 using compose = typename brigand::list<Ts...>;
 
 template<typename... Ts>
-using implements = typename detail::implements_wrapper<Ts...>::type;
+using implements = typename detail::sanitize<brigand::list<Ts...>>::type;
 
 }
