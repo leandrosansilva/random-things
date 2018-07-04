@@ -71,6 +71,8 @@ static_assert(!std::is_same<implements<CAB>, implements<compose<A, B>>>::value, 
 
 static_assert(std::is_same<implements<A, B, C>, implements<C, A, B>>::value, "");
 
+static_assert(std::is_same<implements<A, B, C, A, A, A, C, B, B, C, A>, implements<C, A, B>>::value, "");
+
 static_assert(std::is_base_of<A, implements<A>>::value, "");
 static_assert(std::is_base_of<A, implements<A, B>>::value, "");
 static_assert(std::is_base_of<B, implements<A, B>>::value, "");
@@ -87,6 +89,36 @@ static_assert(std::is_base_of<implements<A, C>, implements<A, B, C>>::value, "")
 
 static_assert(!std::is_base_of<implements<A, C>, implements<B, C>>::value, "");
 static_assert(!std::is_base_of<implements<A, C>, implements<A, B, D>>::value, "");
+
+static_assert(std::is_same<
+                chuecken::detail::uniquify<brigand::list<>>::type,
+                brigand::list<>
+              >::value, "");
+
+static_assert(std::is_same<
+              chuecken::detail::uniquify<brigand::list<A>>::type,
+              brigand::list<A>
+              >::value, "");
+
+static_assert(std::is_same<
+              chuecken::detail::uniquify<brigand::list<A, A>>::type,
+              brigand::list<A>
+              >::value, "");
+
+static_assert(std::is_same<
+              chuecken::detail::uniquify<brigand::list<A, A, A, A, A, A>>::type,
+              brigand::list<A>
+              >::value, "");
+
+static_assert(std::is_same<
+              chuecken::detail::uniquify<brigand::list<A, A, B, A, B, A>>::type,
+              brigand::list<A, B>
+              >::value, "");
+
+static_assert(std::is_same<
+              chuecken::detail::uniquify<brigand::list<A, B>>::type,
+              brigand::list<B, A>
+              >::value, "");
 
 struct Maria final: implements<AB>
 {

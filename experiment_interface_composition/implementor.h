@@ -2,6 +2,9 @@
 #include <brigand/algorithms/sort.hpp>
 #include <brigand/algorithms/flatten.hpp>
 #include <brigand/sequences/list.hpp>
+#include <brigand/sequences/contains.hpp>
+#include <brigand/sequences/back.hpp>
+#include <brigand/algorithms/find.hpp>
 
 namespace chuecken {
 
@@ -44,6 +47,54 @@ namespace detail {
   struct implements: virtual compose_sorted_interfaces<Ts...>::type
   {
   };
+    
+  template<typename T, typename A, typename R>
+  struct uniquify_util;
+  
+  template<typename T, typename A, typename R, bool is_repeated>
+  struct uniquify_util_maybe_removing_repeated;
+  
+  template<typename A, template<class...> class List, typename Head, typename T, typename... Tail>
+  struct uniquify_util_maybe_removing_repeated<T, A, List<Head, Tail...>, true>
+  {
+    using type = typename uniquify_util<Head, A, List<Tail...>>::type;
+  };
+  
+  template<typename T, template<class...> class List, typename Head, typename A, typename... Tail>
+  struct uniquify_util_maybe_removing_repeated<T, A, List<Head, Tail...>, false>
+  {
+    using NewA = brigand::push_front<A, T>;
+    using type = typename uniquify_util<Head, NewA, List<Tail...>>::type;
+  };
+  
+  // trivial case
+  template<typename T, typename A, template<class...> class List>
+  struct uniquify_util<T, A, List<>>
+  {
+    using type = brigand::push_front<A, T>;
+  };
+  
+  template<typename A, template<class...> class List, typename Head, typename... Tail>
+  struct uniquify_util<Head, A, List<Tail...>>
+  {
+    constexpr static bool is_repeated = brigand::found<List<Tail...>, std::is_same<Head, brigand::_1>>::value;
+    using type = typename uniquify_util_maybe_removing_repeated<Head, A, List<Tail...>, is_repeated>::type;
+  };
+    
+  template<typename List>
+  struct uniquify;
+
+  template<template<class...> class List>
+  struct uniquify<List<>>
+  {
+    using type = List<>;
+  };
+    
+  template<template<class...> class List, typename Head, typename... Tail>
+  struct uniquify<List<Head, Tail...>>
+  {
+      using type = typename uniquify_util<Head, List<>, List<Tail...>>::type;
+  };
 
   template<typename... Ts>
   struct implements_wrapper
@@ -60,7 +111,8 @@ namespace detail {
   struct sanitize<List<Elements...>>
   {
     using flattened = brigand::flatten<brigand::list<Elements...>>;
-    using type = typename rename<flattened, implements_wrapper>::type;
+    using uniquified = typename uniquify<flattened>::type;
+    using type = typename rename<uniquified, implements_wrapper>::type;
   };
 
   template<typename A>
