@@ -101,13 +101,10 @@ namespace detail {
     using type = typename rename<sorted_list, implements>::type;
   };
 
-  template<typename... Ts>
-  struct sanitize;
-
-  template<template<class...> class List, typename... Elements>
-  struct sanitize<List<Elements...>>
+  template<typename List>
+  struct sanitize
   {
-    using flattened = brigand::flatten<brigand::list<Elements...>>;
+    using flattened = brigand::flatten<List>;
     using uniquified = typename uniquify<flattened>::type;
     using type = typename rename<uniquified, implements_wrapper>::type;
   };
