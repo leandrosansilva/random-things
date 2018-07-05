@@ -93,7 +93,7 @@ namespace detail {
   template<template<class...> class List, typename Head, typename... Tail>
   struct uniquify<List<Head, Tail...>>
   {
-      using type = typename uniquify_util<Head, List<>, List<Tail...>>::type;
+    using type = typename uniquify_util<Head, List<>, List<Tail...>>::type;
   };
 
   template<typename... Ts>
@@ -118,9 +118,8 @@ namespace detail {
   template<typename A>
   struct implements<A>
   {
-    struct type: virtual A
-    {
-    };
+    static_assert(std::is_abstract<A>::value, "You should not use a non abstract class as an interface...");
+    using type = A;
   };
 
   template<typename A, typename B>
