@@ -59,6 +59,13 @@ void useBA(implements<B, A>& v)
   v.b();
 }
 
+void someFunction(implements<A, B, C, A, A, A, C, B, B, C, A>& v)
+{
+  v.a();
+  v.b();
+  v.c();
+}
+
 using AB = compose<A, B>;
 
 using ABC = compose<AB, C>;
@@ -96,28 +103,28 @@ static_assert(std::is_same<
               >::value, "");
 
 static_assert(std::is_same<
-              chuecken::detail::uniquify<brigand::list<A>>::type,
-              brigand::list<A>
+                chuecken::detail::uniquify<brigand::list<A>>::type,
+                brigand::list<A>
               >::value, "");
 
 static_assert(std::is_same<
-              chuecken::detail::uniquify<brigand::list<A, A>>::type,
-              brigand::list<A>
+                chuecken::detail::uniquify<brigand::list<A, A>>::type,
+                brigand::list<A>
               >::value, "");
 
 static_assert(std::is_same<
-              chuecken::detail::uniquify<brigand::list<A, A, A, A, A, A>>::type,
-              brigand::list<A>
+                chuecken::detail::uniquify<brigand::list<A, A, A, A, A, A>>::type,
+                brigand::list<A>
               >::value, "");
 
 static_assert(std::is_same<
-              chuecken::detail::uniquify<brigand::list<A, A, B, A, B, A>>::type,
-              brigand::list<A, B>
+                chuecken::detail::uniquify<brigand::list<A, A, B, A, B, A>>::type,
+                brigand::list<A, B>
               >::value, "");
 
 static_assert(std::is_same<
-              chuecken::detail::uniquify<brigand::list<A, B>>::type,
-              brigand::list<B, A>
+                chuecken::detail::uniquify<brigand::list<A, B>>::type,
+                brigand::list<B, A>
               >::value, "");
 
 struct Maria final: implements<AB>
