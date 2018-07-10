@@ -1,9 +1,15 @@
 #include "implementor.h"
 #include <iostream>
 #include <brigand/sequences/set.hpp>
+#include <tuple>
 
 using chuecken::compose;
 using chuecken::implements;
+
+static_assert(std::is_same<
+    chuecken::detail::util::rename<brigand::list<int, float>, std::tuple>,
+    std::tuple<int, float>
+    >::value, "");
 
 struct A
 {
@@ -98,32 +104,32 @@ static_assert(!std::is_base_of<implements<A, C>, implements<B, C>>::value, "");
 static_assert(!std::is_base_of<implements<A, C>, implements<A, B, D>>::value, "");
 
 static_assert(std::is_same<
-                chuecken::detail::uniquify<brigand::list<>>::type,
+                chuecken::detail::u::uniquify<brigand::list<>>::type,
                 brigand::list<>
               >::value, "");
 
 static_assert(std::is_same<
-                chuecken::detail::uniquify<brigand::list<A>>::type,
+                chuecken::detail::u::uniquify<brigand::list<A>>::type,
                 brigand::list<A>
               >::value, "");
 
 static_assert(std::is_same<
-                chuecken::detail::uniquify<brigand::list<A, A>>::type,
+                chuecken::detail::u::uniquify<brigand::list<A, A>>::type,
                 brigand::list<A>
               >::value, "");
 
 static_assert(std::is_same<
-                chuecken::detail::uniquify<brigand::list<A, A, A, A, A, A>>::type,
+                chuecken::detail::u::uniquify<brigand::list<A, A, A, A, A, A>>::type,
                 brigand::list<A>
               >::value, "");
 
 static_assert(std::is_same<
-                chuecken::detail::uniquify<brigand::list<A, A, B, A, B, A>>::type,
+                chuecken::detail::u::uniquify<brigand::list<A, A, B, A, B, A>>::type,
                 brigand::list<A, B>
               >::value, "");
 
 static_assert(std::is_same<
-                chuecken::detail::uniquify<brigand::list<A, B>>::type,
+                chuecken::detail::u::uniquify<brigand::list<A, B>>::type,
                 brigand::list<B, A>
               >::value, "");
 
