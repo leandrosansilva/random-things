@@ -12,6 +12,7 @@ include_directories(
   ${CMAKE_BINARY_DIR}
   ${DEPS_INSTALL_DIR}/ctti/include/ 
   ${DEPS_INSTALL_DIR}/brigand/include/ 
+  ${DEPS_INSTALL_DIR}/mpl/src/
 )
 
 add_definitions(-Wall -Wextra -Wpedantic)

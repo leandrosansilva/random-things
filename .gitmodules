@@ -4,3 +4,9 @@
 [submodule "experiment_interface_composition/3rd/brigand"]
 	path = experiment_interface_composition/3rd/brigand
 	url = git@github.com:edouarda/brigand.git
+[submodule "experiment_interface_composition/mpl"]
+	path = experiment_interface_composition/mpl
+	url = git@github.com:kvasir-io/mpl.git
+[submodule "experiment_interface_composition/3rd/mpl"]
+	path = experiment_interface_composition/3rd/mpl
+	url = git@github.com:kvasir-io/mpl.git

@@ -7,6 +7,8 @@
 #include <brigand/algorithms/find.hpp>
 #include <brigand/algorithms/transform.hpp>
 
+#include <kvasir/mpl/mpl.hpp>
+
 namespace chuecken {
 
 namespace detail {
@@ -25,51 +27,50 @@ namespace detail {
   }
 
   namespace ib {
-    // TODO: generate parents_for_typelist<> using variadic templates only
-    // instead of hardcode it for each number of arguments
-  
+    // NOTE: literaly copy&pasted from https://stackoverflow.com/a/51200902/1721672
+    namespace mpl = kvasir::mpl;
+
+    // Produce a list of indices into the original list
+    template <typename C = mpl::listify>
+    using indices = mpl::size<mpl::make_int_sequence<C>>;
+    
+    // Given a list, produce a list of functions which, when evaluated on the original list,
+    // would erase the corresponding element.
+    template <typename C = mpl::listify>
+    using erase_each_index = indices< // given the indices,
+        mpl::transform<               // transform each index by
+            mpl::cfe<mpl::erase>,     // producing mpl::erase<Index>
+            C
+        >
+    >;
+    
+    template <typename C = mpl::identity>
+    using listify = mpl::cfe<mpl::list, C>;
+    
+    template <typename Fn, typename Args>
+    using eager_call = mpl::call<
+        mpl::unpack<Fn>,
+        Args
+    >;
+    
+    template <typename C = mpl::listify>
+    using penultimate_sized_sublists =  mpl::fork< // each path takes the original list
+        // 1. produce a list of functions which erase their index
+        erase_each_index<>,
+        // 2. produce the original list, wrapped in an extra list
+        listify<listify<>>,
+        // Both 1 and 2 are passed here. We perform a cartesian product (that's why
+        // we wrapped 2 in an extra list) to put the arguments together with the functions
+        mpl::product<
+            // Evaluate each function against the entire list
+            mpl::cfe<eager_call>
+        >
+    >;
+
     template<typename... Ts>
-    struct parents_for_typelist;
-
-    template<typename A, typename B>
-    struct parents_for_typelist<A, B>
+    struct parents_for_typelist
     {
-      using type = brigand::list<
-        brigand::list<A>,
-        brigand::list<B>
-      >;
-    };
-
-    template<typename A, typename B, typename C>
-    struct parents_for_typelist<A, B, C>
-    {
-      using type = brigand::list<
-        brigand::list<A, B>,
-        brigand::list<A, C>,
-        brigand::list<B, C>
-      >;
-    };
-
-    template<typename A, typename B, typename C, typename D>
-    struct parents_for_typelist<A, B, C, D>
-    {
-      using type = brigand::list<
-        brigand::list<A, B, C>,
-        brigand::list<A, B, D>,
-        brigand::list<A, C, D>,
-        brigand::list<B, C, D>
-      >;
-    };
-
-    template<typename A, typename B, typename C, typename D, typename E>
-    struct parents_for_typelist<A, B, C, D, E>
-    {
-      using type = brigand::list<
-        brigand::list<A, B, C, D>,
-        brigand::list<A, B, C, E>,
-        brigand::list<A, C, D, E>,
-        brigand::list<B, C, D, E>
-      >;
+      using type = mpl::call<mpl::unpack<penultimate_sized_sublists<>>, mpl::list<Ts...>>;
     };
   }
 
